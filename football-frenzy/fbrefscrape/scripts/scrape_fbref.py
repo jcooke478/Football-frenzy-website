@@ -7,7 +7,7 @@ with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
     reader = csv.DictReader(csvfile)
 
     for i, row in enumerate(reader):  # Add an index counter
-        if i >= 3:  # Stop after 3 players
+        if i >= 12:  # Stop after 3 players
             break
 
         player_name = row["Name"]
@@ -43,9 +43,7 @@ with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
         print("\n")
         
         # Add a delay to avoid rate limiting
-        print("Sleeping for 60 seconds to avoid rate limiting...")
-        time.sleep(60)  # Delay for 60 seconds
-        print("Resuming scraping...")
+        time.sleep(5)  # Delay for 5 seconds
 
 
 
