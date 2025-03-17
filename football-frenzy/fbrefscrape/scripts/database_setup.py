@@ -8,10 +8,11 @@ db = conn.cursor()
 db.execute('''
 CREATE TABLE IF NOT EXISTS player_appearances (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    player_name TEXT,
-    season TEXT,
-    club TEXT,
-    appearances INTEGER
+    player_name TEXT NOT NULL,
+    season TEXT NOT NULL,
+    club TEXT NOT NULL,
+    appearances INTEGER NOT NULL,
+    UNIQUE(player_name, season, club)
 )
 ''')
 
