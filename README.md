@@ -12,7 +12,7 @@ Writing data-scarping script -
 
 
 Web-design using HTML, bootstrap, CSS and python - 
-As my project was user based i needed to build an interface that could accomodate user input and display relevant results correctly and aesthetically. i first started by inspecting the html of similar sites to get an idea of the basic struture and layout i would need. i then read through relevant bootstraps documents to understand the different components i could use specific to bootstrap and the conventions around using these supported components. it was then just a process of implementing my design one step at a time starting with the homepage and navigation bar and working my way down.
+As my project was user based i needed to build an interface that could accomodate user input and display relevant results correctly and aesthetically. i first started by inspecting the html of similar sites to get an idea of the basic struture and layout i would need. i then read through relevant bootstraps documents to understand the different components that were available specific to bootstrap and understanding certain systems for styling such as their grid and cotainer systems. it was then just a process of implementing my design one step at a time starting with the homepage and navigation bar and working my way down. 
 
 
 
