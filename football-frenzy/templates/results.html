@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Results
+{% endblock %}
+
+{% block main %}
+    <h1>Football Frenzy!</h1>
+    {% for player in p}
+
+    {% if result %}
+        <h2>Results:</h2>
+        <p>{{ result }}</p>
+    {% endif %}
+{% endblock %}

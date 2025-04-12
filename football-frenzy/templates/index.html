@@ -5,7 +5,28 @@
 {% endblock %}
 
 {% block main %}
+    <h1>Football Frenzy!</h1>
+    <h4>Footy Tic-Tac-Toe Solver</h4>
+    <div class="row justify-content-center">
+        <form class="col-4 m-4" method="POST">
+            <label for="team1input" class="col-4">Team 1</label>
+            <input type="text" class="form-control mb-4" id="team1input">
+            <label for="team2input" class="col-4">Team 2</label>
+            <input type="text" class="form-control" id="team2input">
+        </form>
+    </div>
+    <div class="row justify-content-center">
+        <button class="col-4">Solve</button>
+    </div>
 
-    <p>Index page</p>
+    <script>
+        const club_names = {{ club_names | tojson }};
+        new Awesomplete(document.getElementById("team1input"), {
+          list: club_names
+        });
 
+        new Awesomplete(document.getElementById("team2input"), {
+          list: club_names
+        });
+      </script>
 {% endblock %}
