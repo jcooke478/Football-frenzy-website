@@ -24,17 +24,24 @@ def after_request(response):
 def index():
     if request.method == "POST":
         # Handle form submission
-        team_name1 = request.form.get("team_name1")
-        team_name2 = request.form.get("team_name2")
+        team_name1 = request.form.get("team1input")
+        team_name2 = request.form.get("team2input")
 
         player_data = db.execute("""
                 SELECT player_name, season, club, appearances
                 FROM player_appearances
-                WHERE club = ? OR club = ?
-                GROUP BY player_name
-                """, team_name1, team_name2)
-        
-
+                WHERE player_name IN (
+                    SELECT player_name
+                    FROM player_appearances
+                    WHERE club = ?
+                    INTERSECT
+                    SELECT player_name
+                    FROM player_appearances
+                    WHERE club = ?
+                )
+                AND club IN (?, ?)    
+                """, team_name1, team_name2, team_name1, team_name2)
+                                    
         return render_template("results.html", player_data=player_data, team_name1=team_name1, team_name2=team_name2)
     
     if request.method == "GET":

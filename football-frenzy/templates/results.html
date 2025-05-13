@@ -6,10 +6,34 @@
 
 {% block main %}
     <h1>Football Frenzy!</h1>
-    {% for player in p}
+    {% if player_data %}
+    <table>
+        <tr>
+            <th>Player</th>
+            <th>Season</th>
+            <th>Club</th>
+            <th>Appearances</th>
+        </tr>
+        {% for player in player_data %}
+        <tr>
+            <td>{{ player["player_name"] }}</td>
+            <td>{{ player["season"] }}</td>
+            <td>{{ player["club"] }}</td>
+            <td>{{ player["appearances"] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+  {% else %}
+    <p>No players found.</p>
+  {% endif %}
 
-    {% if result %}
-        <h2>Results:</h2>
-        <p>{{ result }}</p>
+    {% if error %}
+        <h2>Error:</h2>
+        <p>{{ error }}</p>
+    {% endif %}
+
+    {% if warning %}
+        <h2>Warning:</h2>
+        <p>{{ warning }}</p>
     {% endif %}
 {% endblock %}
