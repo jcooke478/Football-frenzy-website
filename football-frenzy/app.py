@@ -28,7 +28,9 @@ def index():
         team_name2 = request.form.get("team2input")
 
         player_data = db.execute("""
-                SELECT player_name, season, club, appearances
+                SELECT player_name, club,
+                    SUBSTR(MIN(season), 1, 4) || '-' || SUBSTR(MAX(season), 6, 4) AS seasons,
+                    SUM(appearances) AS total_appearances
                 FROM player_appearances
                 WHERE player_name IN (
                     SELECT player_name
@@ -40,6 +42,7 @@ def index():
                     WHERE club = ?
                 )
                 AND club IN (?, ?)    
+                GROUP BY player_name, club
                 """, team_name1, team_name2, team_name1, team_name2)
                                     
         return render_template("results.html", player_data=player_data, team_name1=team_name1, team_name2=team_name2)
