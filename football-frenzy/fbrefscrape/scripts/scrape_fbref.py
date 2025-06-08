@@ -1,4 +1,5 @@
 import requests
+from googlesearch import search
 from bs4 import BeautifulSoup
 import csv
 import time
@@ -7,30 +8,38 @@ import sqlite3
 conn = sqlite3.connect("../fbref.db")
 db = conn.cursor()
 
+# opens players.csv file and creates an iterator to read each row (reader)
 with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
     reader = csv.DictReader(csvfile)
 
+    # selects each row in the csv file and assigns name value to current search query
     for row in reader:
-
-        for i, row in enumerate(reader):
+        for i, row in enumerate(reader): # counter to keep track of how many rows have been processed
             player_name = row["Name"]
-            player_url = row["Links"]
-            full_url = f"https://fbref.com{player_url}"
+            query = f"site:fbref.com{player_name}"
+            search_results = search(query, num_results=1)
             
-            print(f"Scraping {player_name} at {full_url}")
-            # Add a delay to avoid getting blocked by fbref.com
-            time.sleep(5)  # Delay for 5 seconds (20 requests per minute)
+            if "en/players/" in search_results:
+                player_url = search_results[0]
+            else:
+                print(f"No valid URL found for {player_name}")
+                continue
+                
+            print(f"Scraping {player_name} at {player_url}")
+            time.sleep(3.1) # Add a delay to avoid getting blocked by fbref.com (20 searches per second)
             
-            response = requests.get(full_url)
+            response = requests.get(player_url)
 
             if response.status_code == 200:
-                soup = BeautifulSoup(response.content, "html.parser")
-                
+                soup = BeautifulSoup(response.content, "html.parser") # creates 'parsed' html object for searching for content
+
+                # Finds the table with player appearances   
                 table = soup.find("table", {"id": "stats_standard_dom_lg"})
                 if not table:
                     print(f"failed to scrape data for {player_name}")
                     continue
 
+                # finds body of the table with player data
                 tbody = table.find("tbody")
                 if not tbody:
                     print(f"failed to scrape data for {player_name}")
@@ -38,6 +47,7 @@ with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
 
                 rows = tbody.find_all("tr")
 
+                # Loops through each row to locate team, years played and number of games
                 for row in rows:
                     team_cell = row.find("td", {"data-stat": "team"})
                     years_cell = row.find("th", {"data-stat": "year_id"})
@@ -48,9 +58,9 @@ with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
                         years = years_cell.text.strip()
                         appearances = games_cell.text.strip()
 
-                        # Ensure appearances is a valid integer
+                        # Ensures appearances is a valid integer
                         appearances = int(appearances) if appearances.isdigit() else 0
-                        
+                            
                         db.execute('''
                                 INSERT OR IGNORE INTO player_appearances (player_name, season, club, appearances)
                                 VALUES (?, ?, ?, ?)
@@ -58,6 +68,7 @@ with open("../data/players.csv", newline="", encoding="utf-8") as csvfile:
                     else:
                         print(f"failed to scrape data for {player_name}")
 
+                # coomits every 10 rows to database
                 if i % 10 == 0:
                     conn.commit()
 
